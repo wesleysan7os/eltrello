@@ -3,13 +3,21 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import mongoose from 'mongoose'
 
+import * as usersController from './controllers/users'
+import bodyParser from 'body-parser'
+
 const app = express()
 const httpServer = createServer(app)
 const io = new Server
 
-app.get("/", (req, res) => {
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.get('/', (req, res) => {
   res.send("API is running!")
 })
+
+app.post('/api/users', usersController.register)
 
 io.on('connection', () => {
   console.log('connected!')
