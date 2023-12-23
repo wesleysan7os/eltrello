@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { application } from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import mongoose from 'mongoose'
@@ -17,7 +17,11 @@ app.get('/', (req, res) => {
   res.send("API is running!")
 })
 
+app.get('/api/users', usersController.retrieveAll)
+
 app.post('/api/users', usersController.register)
+
+app.post('/api/users/login', usersController.login)
 
 io.on('connection', () => {
   console.log('connected!')
