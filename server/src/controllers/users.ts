@@ -4,18 +4,19 @@ import { UserDocument } from "../types/user.interface";
 import { Error } from 'mongoose'
 import jwt from 'jsonwebtoken'
 import { secret } from '../config'
+import { ExpressRequestInterface } from "../types/expressRequest.interface";
 
-export const register = async(req: Request, res: Response, next: NextFunction) => {
-  const normalizedUser = (user: UserDocument) => {
-    const token = jwt.sign({id: user.id, email: user.email}, secret)
-    return {
-      id: user._id,
-      email: user.email,
-      username: user.username,
-      token
-    }
+const normalizedUser = (user: UserDocument) => {
+  const token = jwt.sign({id: user.id, email: user.email}, secret)
+  return {
+    id: user._id,
+    email: user.email,
+    username: user.username,
+    token
   }
-  
+}
+
+export const register = async(req: Request, res: Response, next: NextFunction) => {  
   try {
     const newUser = new UserModel({
       email: req.body.email,
@@ -40,16 +41,6 @@ export const retrieveAll = async(req: Request, res: Response) => {
 }
 
 export const login = async(req: Request, res: Response, next: NextFunction) => {
-  const normalizedUser = (user: UserDocument) => {
-    const token = jwt.sign({id: user.id, email: user.email}, secret)
-    return {
-      id: user._id,
-      email: req.body.email,
-      username: req.body.username,
-      token
-    }
-  }
-  
   try {
     const user = await UserModel.findOne({
       email: req.body.email
@@ -64,4 +55,9 @@ export const login = async(req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     next(err)
   }
+}
+
+export const currentUser = async(req: ExpressRequestInterface, res: Response) => {
+  if (!req.user) return res.sendStatus(401)
+  res.send(normalizedUser(req.user))
 }
