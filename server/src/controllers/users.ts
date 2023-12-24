@@ -50,7 +50,7 @@ export const login = async(req: Request, res: Response, next: NextFunction) => {
     const passwordMatch = await user?.validatePassword(req.body.password)
 
     if (!user || !passwordMatch) return res.status(422).json(erros)
-    res.send(normalizedUser(user!))
+    res.send(normalizedUser(user))
 
   } catch (err) {
     next(err)
