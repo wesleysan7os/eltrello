@@ -67,6 +67,10 @@
   color: #2c3e50;
 }
 
+.information-container :last-child {
+  margin-left: 40px;
+}
+
 .workflow-container {
   color: #2c3e50;
 }
