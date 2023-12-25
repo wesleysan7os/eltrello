@@ -16,13 +16,13 @@
       type="text"
       *ngIf="inputType === 'input'"
       formControlName="title"
-      class="input-form-input"
+      class="inline-form-input"
       [placeholder]="inputPlaceholder"
     />
     <textarea 
       *ngIf="inputType === 'textarea'"
       formControlName="title"
-      class="input-form-input"
+      class="inline-form-input"
     ></textarea>
     <button 
       *ngIf="hasButton"
