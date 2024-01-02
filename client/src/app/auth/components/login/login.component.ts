@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "../../services/auth.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Router } from "@angular/router";
+import { SocketService } from "src/app/shared/services/socket.service";
 
 @Component({
   selector: 'auth-login',
@@ -16,7 +17,12 @@ export class LoginComponent {
     password: ['', Validators.required],
   })
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService, 
+    private router: Router,
+    private socketService: SocketService
+  ) {}
 
   onSubmit(): void {
     this.authService.login(this.form.value).subscribe({
@@ -24,6 +30,7 @@ export class LoginComponent {
         console.log("loggedUser", loggedUser)
         this.authService.setToken(loggedUser)
         this.authService.setCurrentUser(loggedUser)
+        this.socketService.setupSocketConnection(loggedUser)
         this.errorMessage = null
         this.router.navigateByUrl('/')
       },
