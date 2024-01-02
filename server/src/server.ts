@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import jwt from 'jsonwebtoken'
 import * as usersController from './controllers/users'
 import * as boardsController from './controllers/boards'
+import * as columnsController from './controllers/columns'
 import bodyParser from 'body-parser'
 import authMiddleware from './middlewares/auth'
 import cors from 'cors'
@@ -32,7 +33,7 @@ mongoose.set("toJSON", {
   }
 })
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.send("API is running!")
 })
 
@@ -44,6 +45,7 @@ app.get('/api/user', authMiddleware, usersController.currentUser)
 app.get('/api/boards', authMiddleware, boardsController.getBoards)
 app.post('/api/boards', authMiddleware, boardsController.createBoard)
 app.get('/api/boards/:boardId', authMiddleware, boardsController.getBoard)
+app.get('/api/boards/:boardId/columns', authMiddleware, columnsController.getColumns)
 
 io.use(async (socket: Socket, next) => {
   try {
@@ -62,6 +64,9 @@ io.use(async (socket: Socket, next) => {
   })
   socket.on(SocketEventsEnum.boardsLeave, (data) => {
     boardsController.leaveBoard(io, socket, data)
+  })
+  socket.on(SocketEventsEnum.columnsCreate, data => {
+    columnsController.createColumn(io, socket, data)
   })
 })
 
